@@ -7,11 +7,28 @@ import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
 const SignIn = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
-    const [OverlayText,setOverlayText] = useState("Sign in functionality is \n currently incomplete");
+    const [OverlayText,setOverlayText] = useState("");
     const [popUpErr,setpopUpErr] = useState(false);
+    const [email,onChangeEmail] = useState('');
+    const [password,onChangePassword] = useState('');
     const signIn = ()=>{
-        setOverlay(true);
-        setpopUpErr(true);
+    }
+
+    const validate = ()=>{
+        if(email == '' && password == ''){
+            showErr(true,true,"Unable to sign in \n please fill in all fields");
+        }else if(email == ''){
+            showErr(true,true,"Unable to sign in \n please enter your email");
+        }else if(password == ''){
+            showErr(true,true,"Unable to sign in \n please enter your password");
+        }
+    }
+
+
+    const showErr = (show_overlay,show_popup,overlay_text)=>{
+        setOverlay(show_overlay);
+        setpopUpErr(show_popup);
+        setOverlayText(overlay_text);
     }
   return (
         <>
@@ -30,10 +47,10 @@ const SignIn = ({navigation})=>{
                     </View>
                     <View style={{width:'80%',marginBottom:20}}>
                         <Text style={{color:'#fff',fontSize:40,marginTop:10,marginBottom:30}}>Welcome {'\n'}Back</Text> 
-                        <TextInput style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Email" />  
-                        <TextInput  secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,marginTop:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Password" />  
+                        <TextInput value={email} onChangeText={text => onChangeEmail(text)} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Email" />  
+                        <TextInput value={password} onChangeText={text => onChangePassword(text)} secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,marginTop:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Password" />  
                     </View>
-                    <AuroraButton buttonFunction={()=>signIn()} bgcolor="white" text="Sign in" color={"black"} outline={false}/>
+                    <AuroraButton buttonFunction={()=>validate()} bgcolor="white" text="Sign in" color={"black"} outline={false}/>
                 </View>
                 </ScrollView>
             </View>

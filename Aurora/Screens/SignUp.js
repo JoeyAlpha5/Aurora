@@ -9,10 +9,47 @@ const SignUp = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState('Registration is currently not complete');
     const [popUpErr,setpopUpErr] = useState(false);
+    const [Fullname,onChangeFullname] = useState('');
+    const [Email,onChangeEmail] = useState('');
+    const [Mobile,onChangeMobile] = useState('');
+    const [Password,onChangePassword] = useState('');
+    const [ConfirmPassword,onChangeConfirmPassword] = useState('');
     const signUp = ()=>{
-        setOverlay(true);
-        setpopUpErr(true);
     }
+
+
+    const validate = ()=>{
+        //validate the full name
+        var fullname_has_spacing = Fullname.includes(" ");
+        var index_of_spacing = Fullname.indexOf(" ");
+        var second_name = Fullname.substring(index_of_spacing+1);
+        var first_name = Fullname.substring(0,index_of_spacing);
+        //
+        if(Fullname,Email,Mobile,Password,ConfirmPassword == ''){
+            showErr(true,true,"Unable to sign up \n please fill in all fields");
+        }else if(isNaN(Mobile) || Mobile.length < 10 || Mobile[0] != '0' || Mobile.length > 10){
+            showErr(true,true,"Unable to sign up \n please enter a valid 10 digit mobile number");
+        }else if(Password != ConfirmPassword){
+            showErr(true,true,"Unable to sign up \n your passwords do not match");
+        }else if(fullname_has_spacing == false){
+            showErr(true,true,"Unable to sign up \n please enter your fullname");
+        }else if(first_name.length < 2){
+            showErr(true,true,"Unable to sign up \n a valid first name must have 2 characters or more");
+        }else if(second_name.length < 2){
+            showErr(true,true,"Unable to sign up \n a valid last name must have 2 characters or more");
+        }else if(Password.length < 6){
+            showErr(true,true,"Unable to sign up \n a password must be at least 6 characters long");
+        }else{
+            showErr(true,false,"Sign up successful \n your account has been created.\n please verify your email to continue");
+        }
+    }
+
+    const showErr = (show_overlay,show_popup_err,overlay_text)=>{
+        setOverlay(show_overlay);
+        setpopUpErr(show_popup_err);
+        setOverlayText(overlay_text);
+    }
+
     return (
         <>
             <StatusBar  backgroundColor="white" barStyle="dark-content"/>
@@ -30,13 +67,13 @@ const SignUp = ({navigation})=>{
                             </View>
                             <View style={{width:'80%',marginBottom:20}}>
                                 <Text style={{color:'#fff',fontSize:40,marginTop:10,marginBottom:30}}>Create {'\n'}Account</Text> 
-                                <TextInput style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Full name" />  
-                                <TextInput style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Email" /> 
-                                <TextInput style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Mobile" />
-                                <TextInput secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Password" />
-                                <TextInput  secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,marginTop:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Confirm Password" />  
+                                <TextInput value={Fullname} onChangeText={text => onChangeFullname(text)} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Full name" />  
+                                <TextInput value={Email} onChangeText={text => onChangeEmail(text)} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Email" /> 
+                                <TextInput value={Mobile} onChangeText={text => onChangeMobile(text)} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Mobile" />
+                                <TextInput value={Password} onChangeText={text => onChangePassword(text)} secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,borderWidth:1,borderColor:'white',paddingLeft:10,marginTop:10}} placeholderTextColor="#fff" placeholder="Password" />
+                                <TextInput  value={ConfirmPassword} onChangeText={text => onChangeConfirmPassword(text)} secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,marginTop:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Confirm Password" />  
                             </View>
-                            <AuroraButton buttonFunction={()=>signUp()} bgcolor="white" text="Sign up" color={"black"} outline={false}/>
+                            <AuroraButton buttonFunction={()=>validate()} bgcolor="white" text="Sign up" color={"black"} outline={false}/>
                     </View>
                 </ScrollView>
             </View>
