@@ -51,11 +51,14 @@ const SignIn = ({navigation})=>{
                         <TextInput value={password} onChangeText={text => onChangePassword(text)} secureTextEntry={true} style={{height:52,width:'100%',color:'white',borderRadius:10,marginTop:10,borderWidth:1,borderColor:'white',paddingLeft:10}} placeholderTextColor="#fff" placeholder="Password" />  
                     </View>
                     <AuroraButton buttonFunction={()=>validate()} bgcolor="white" text="Sign in" color={"black"} outline={false}/>
+                    <TouchableOpacity onPress={()=>navigation.navigate('ForgotPassword')}>
+                          <Text style={{color:'white',marginTop:20,color:'#242424',textDecorationLine:'underline'}}>Forgot password</Text>
+                    </TouchableOpacity>
                 </View>
                 </ScrollView>
             </View>
-            <Overlay isVisible={overlay} onBackdropPress={()=>setOverlay(false)}>
-                <PopUp text={OverlayText} error={popUpErr} />
+            <Overlay isVisible={overlay}>
+                <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
             </Overlay>
         </>
     )

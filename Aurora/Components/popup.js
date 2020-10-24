@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import AuroraButton from './AuroraButton';
 const PopUp = (props)=>{
+
+    const buttonClicked = ()=>{
+        if(props.error){
+            //close the overlay
+            props.errorBtn();
+        }else{
+            // 
+        }
+    }
+
     return (
         <>
             <View style={styles.popUp}>
@@ -13,7 +23,7 @@ const PopUp = (props)=>{
                 <Text style={{textAlign:'center',marginTop:10}}>
                     {props.text}
                 </Text>
-                <AuroraButton bgcolor="black" text="Okay" color={"white"} outline={false}/>
+                <AuroraButton buttonFunction={()=>buttonClicked()} bgcolor="black" text="Okay" color={"white"} outline={false}/>
             </View>
         </>
     )

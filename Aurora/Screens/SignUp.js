@@ -77,8 +77,8 @@ const SignUp = ({navigation})=>{
                     </View>
                 </ScrollView>
             </View>
-            <Overlay isVisible={overlay} onBackdropPress={()=>setOverlay(false)}>
-                <PopUp text={OverlayText} error={popUpErr} />
+            <Overlay isVisible={overlay}>
+                <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
             </Overlay>
         </>
     )
