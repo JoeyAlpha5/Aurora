@@ -17,17 +17,6 @@ const Main = ({navigation})=>{
                 </View>
 
                 <View style={styles.bottomSection}>
-     
-                    {/* <Image style={{width:'100%',height:120,resizeMode:'contain'}} source={require('../Images/tshirt.png')}/>
-                    <Text style={{color:'white', textAlign:'center',marginTop:20,marginBottom:10}}>
-                        Welcome to Aurora. A service{'\n'}
-                        dedicated to some extra content{'\n'}
-                        here to describe the service. More{'\n'}
-                        content here just to give a brief of{'\n'}
-                        what the app is all about.
-                    </Text> */}
-
-
                     {/* swiper tutorial */}
                     <View style={{width:'100%',height:320,justifyContent:'center',alignItems:'center'}}>
                         <Swiper  prevButton={<></>} nextButton={<></>} width={320} height={300}  loadMinimalSize={1} autoplay={false} loadMinimal={true} showsButtons={false} dotColor={'gray'} activeDotColor={'#fff'}  style={styles.wrapper} showsButtons={true}>

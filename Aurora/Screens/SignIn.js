@@ -5,12 +5,14 @@ import Logo from '../Components/Logo';
 import Feather from 'react-native-vector-icons/Feather';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
+import Loader from '../Components/Loader';
 const SignIn = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState("");
     const [popUpErr,setpopUpErr] = useState(false);
     const [email,onChangeEmail] = useState('');
     const [password,onChangePassword] = useState('');
+    const [loader,setLoader] = useState(false);
     const signIn = ()=>{
     }
 
@@ -21,6 +23,9 @@ const SignIn = ({navigation})=>{
             showErr(true,true,"Unable to sign in \n please enter your email");
         }else if(password == ''){
             showErr(true,true,"Unable to sign in \n please enter your password");
+        }else{
+            setOverlay(false);
+            setLoader(true);
         }
     }
 
@@ -59,6 +64,9 @@ const SignIn = ({navigation})=>{
             </View>
             <Overlay isVisible={overlay}>
                 <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
+            </Overlay>
+            <Overlay isVisible={loader} onBackdropPress={()=>setLoader(false)}>
+                <Loader text={'Signing you in, please wait..'}/>
             </Overlay>
         </>
     )

@@ -5,15 +5,18 @@ import Logo from '../Components/Logo';
 import Feather from 'react-native-vector-icons/Feather';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
+import Loader from '../Components/Loader';
 const ForgotPassword = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState("");
     const [popUpErr,setpopUpErr] = useState(false);
     const [email,onChangeEmail] = useState('');
-
+    const [loader,setLoader] = useState(false);
     const validate = ()=>{
         if(email == '' ){
             showErr(true,true,"Unable to sign in \n please enter your email");
+        }else{
+            setLoader(true);
         }
     }
 
@@ -48,6 +51,9 @@ const ForgotPassword = ({navigation})=>{
             </View>
             <Overlay isVisible={overlay}>
                 <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
+            </Overlay>
+            <Overlay isVisible={loader} onBackdropPress={()=>setLoader(false)}>
+                <Loader text={'Processing, please wait..'}/>
             </Overlay>
         </>
     )

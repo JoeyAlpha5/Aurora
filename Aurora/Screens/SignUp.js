@@ -5,6 +5,7 @@ import Logo from '../Components/Logo';
 import Feather from 'react-native-vector-icons/Feather';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
+import Loader from '../Components/Loader';
 const SignUp = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState('Registration is currently not complete');
@@ -14,6 +15,7 @@ const SignUp = ({navigation})=>{
     const [Mobile,onChangeMobile] = useState('');
     const [Password,onChangePassword] = useState('');
     const [ConfirmPassword,onChangeConfirmPassword] = useState('');
+    const [loader,setLoader] = useState(false);
     const signUp = ()=>{
     }
 
@@ -39,8 +41,10 @@ const SignUp = ({navigation})=>{
             showErr(true,true,"Unable to sign up \n a valid last name must have 2 characters or more");
         }else if(Password.length < 6){
             showErr(true,true,"Unable to sign up \n a password must be at least 6 characters long");
-        }else{
-            showErr(true,false,"Sign up successful \n your account has been created.\n please verify your email to continue");
+        }
+        else{
+            setOverlay(false);
+            setLoader(true);
         }
     }
 
@@ -79,6 +83,10 @@ const SignUp = ({navigation})=>{
             </View>
             <Overlay isVisible={overlay}>
                 <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
+            </Overlay>
+
+            <Overlay isVisible={loader} onBackdropPress={()=>setLoader(false)}>
+                <Loader text={'Creating your account, please wait..'}/>
             </Overlay>
         </>
     )
