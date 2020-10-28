@@ -1,39 +1,54 @@
 import React, {useState,useEffect,createRef} from 'react';
-import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity} from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
 import Post from '../Components/Post';
 const Home = ({navigation, route})=>{
     const actionSheetRef = createRef();
     const [Feed,setFeed] = useState([]);
+    const [SelectedPostLink,setSelectedPostLink] = useState('');
     const [Refreshing,setRefreshing] = useState(false);
-    const getFeed = ()=>{
-        fetch('http://0255d7e6116b.ngrok.io/feed')
+    const [morePostsAvailable,setMorePostsAvailable] = useState(true);
+    // get the feed
+    const getFeed = (reset_feed)=>{
+        var feed_count = 0;
+        reset_feed == true? feed_count = 0: feed_count = Feed.length;
+        fetch('http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count)
         .then(res=>res.json())
         .then(json=>{
-            setFeed(json.response);
+            //
+            console.log('results length ',json.response.length);
+            // check if there are any results in the response
+            {json.response.length > 0? setMorePostsAvailable(true): setMorePostsAvailable(false)};
+            {reset_feed == true? setFeed(json.response): setFeed([...Feed,...json.response])}
             //disable refreshing
             setRefreshing(false);
-        }).then(()=>{
+        }).finally(()=>{
             console.log(Feed);
         });
     }
 
     const onRefresh = ()=>{
-        console.log("refreshed");
         setRefreshing(true);
-        getFeed();
-
+        getFeed(true);
     }
 
-    const viewPostOptions = (post_id) =>{
-        console.log("post id is ", post_id);
+    const viewPostOptions = (feed_index) =>{
+        setSelectedPostLink(Feed[feed_index].instagram_link);
         actionSheetRef.current?.setModalVisible();
+    }
+
+    const openLink = ()=>{
+        Linking.openURL(SelectedPostLink);
+    }
+
+    const getMorePosts = ()=>{
+        console.log("getting more");
+        getFeed(false);
     }
 
     useEffect(()=>{
         // get the colors feed
-        getFeed();
+        getFeed(true);
     },[])
 
     return (
@@ -52,7 +67,7 @@ const Home = ({navigation, route})=>{
 
                         ):
                         (
-                            <Post feed={Feed} Refreshing={Refreshing} onRefresh={onRefresh} viewPostOptions={viewPostOptions}/>
+                            <Post morePostToLoad={morePostsAvailable} feed={Feed} getMore={getMorePosts} Refreshing={Refreshing} onRefresh={onRefresh} viewPostOptions={viewPostOptions}/>
                         )
 
                     }
@@ -60,18 +75,17 @@ const Home = ({navigation, route})=>{
             </View>
             <ActionSheet gestureEnabled={true} ref={actionSheetRef} containerStyle={{borderTopRightRadius:30,borderTopLeftRadius:30,backgroundColor:'#000'}}>
                 <View style={styles.actionSheet}>
-                    <Text style={{color:'white',fontWeight:'bold',fontSize:18,marginBottom:40}}>Report post</Text>
+                    <Text style={{color:'white',fontWeight:'bold',fontSize:18,marginBottom:40}}>Post options</Text>
                     <View style={{alignItems:'center',paddingBottom:20,justifyContent:'center'}}>
-                        <Text style={{color:'white'}}>Hatespeech</Text>
+                        <Text style={{color:'white'}}>Share Aurora post link</Text>
                     </View>
                     <View style={{alignItems:'center',paddingBottom:20,justifyContent:'center'}}>
-                        <Text style={{color:'white'}}>Graphic violence</Text>
+                        <TouchableOpacity onPress={()=>openLink()}>
+                            <Text style={{color:'white'}}>View artist on instagram</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={{alignItems:'center',paddingBottom:20,justifyContent:'center'}}>
-                        <Text style={{color:'white'}}>Harrassment or bullying</Text>
-                    </View>
-                    <View style={{alignItems:'center',paddingBottom:20,justifyContent:'center'}}>
-                        <Text style={{color:'white'}}>Sexually explicit material</Text>
+                        <Text style={{color:'white'}}>Report post</Text>
                     </View>
                 </View>
             </ActionSheet>
@@ -82,7 +96,7 @@ const Home = ({navigation, route})=>{
 export default Home
 const styles = StyleSheet.create({
     actionSheet:{
-        height:300,
+        height:250,
         backgroundColor:'#000',
         borderTopLeftRadius:30,
         borderTopRightRadius:30,

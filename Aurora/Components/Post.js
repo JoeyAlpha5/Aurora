@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, RefreshControl,Text,StatusBar,TextInput,StyleSheet,TouchableOpacity,ActivityIndicator,FlatList,Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ActionSheet from "react-native-actions-sheet";
 import { useScrollToTop } from '@react-navigation/native';
+import EndOfList from './EndOfList';
 export const Post = (props)=>{
     const ref = React.useRef(null);
     useScrollToTop(ref);
@@ -12,10 +12,12 @@ export const Post = (props)=>{
             data={props.feed}
             ref={ref}
             showsVerticalScrollIndicator ={false}
-            ListFooterComponent={<ActivityIndicator style={{marginTop:5}} size="small" color="#2FBBF0"/>}
+            ListFooterComponent={props.morePostToLoad == true ? <ActivityIndicator style={{marginTop:5}} size="small" color="#2FBBF0"/>:<EndOfList/>}
             keyExtractor={( item,index ) => {return item.post_id.toFixed()} }
             refreshControl={<RefreshControl colors={['#2FBBF0']} refreshing={props.Refreshing} onRefresh={props.onRefresh}/>} 
-            renderItem={({item})=>(
+            onEndReached={()=>props.getMore()}
+            onEndReachedThreshold={1}
+            renderItem={({item,index})=>(
                 <>
                     <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:20}}>
                         <View style={{flexDirection:'row'}}>
@@ -26,7 +28,7 @@ export const Post = (props)=>{
                             </View>
                         </View>
                         <View>
-                            <TouchableOpacity onPress={()=>props.viewPostOptions(item.post_id)}>
+                            <TouchableOpacity onPress={()=>props.viewPostOptions(index)}>
                                 <Ionicons name="ellipsis-vertical" size={15} color={"#7A8FA6"}/>
                             </TouchableOpacity>
                         </View>
