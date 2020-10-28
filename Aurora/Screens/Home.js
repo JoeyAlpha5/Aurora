@@ -1,16 +1,19 @@
 import React, {useState,useEffect,createRef} from 'react';
-import {View, RefreshControl,Text,StatusBar,TextInput,StyleSheet,TouchableOpacity,ActivityIndicator,FlatList,Image} from 'react-native';
+import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ActionSheet from "react-native-actions-sheet";
+import Post from '../Components/Post';
 const Home = ({navigation, route})=>{
     const actionSheetRef = createRef();
     const [Feed,setFeed] = useState([]);
     const [Refreshing,setRefreshing] = useState(false);
     const getFeed = ()=>{
-        fetch('http://590faa87898c.ngrok.io/feed')
+        fetch('http://0255d7e6116b.ngrok.io/feed')
         .then(res=>res.json())
         .then(json=>{
             setFeed(json.response);
+            //disable refreshing
+            setRefreshing(false);
         }).then(()=>{
             console.log(Feed);
         });
@@ -18,6 +21,9 @@ const Home = ({navigation, route})=>{
 
     const onRefresh = ()=>{
         console.log("refreshed");
+        setRefreshing(true);
+        getFeed();
+
     }
 
     const viewPostOptions = (post_id) =>{
@@ -34,46 +40,19 @@ const Home = ({navigation, route})=>{
         <>
             <View style={{flex:1,backgroundColor:'#fff',alignItems:'center'}}>
                 <StatusBar  backgroundColor="white" barStyle="dark-content"/>
-                <View style={{width:'90%'}}>
-                    <Text style={{fontSize:32,fontWeight:'bold',marginTop:10}}>A Colors Show</Text>
+                <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start'}}>
+                    <Image style={{width:150,height:80,resizeMode:'contain'}} source={require('../Images/transparentLogo.png')}/>
                     <TextInput placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search for videos'}/>
                 </View>
 
-                <View style={{width:'90%',marginTop:10,paddingBottom:110}}>
+                <View style={{width:'90%',marginTop:20,paddingBottom:130}}>
                     {Feed.length < 1?
                         (
                             <ActivityIndicator style={{marginTop:20}} size="large" color="#2FBBF0" />
 
                         ):
                         (
-                        <FlatList
-                            data={Feed}
-                            showsVerticalScrollIndicator ={false}
-                            ListFooterComponent={<ActivityIndicator style={{marginTop:5}} size="small" color="#2FBBF0"/>}
-                            keyExtractor={( item,index ) => {return item.post_id.toFixed()} }
-                            refreshControl={<RefreshControl colors={['#2FBBF0']} refreshing={Refreshing} onRefresh={onRefresh}/>} 
-                            renderItem={({item})=>(
-                                <>
-                                    <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:20}}>
-                                        <View style={{flexDirection:'row'}}>
-                                            <Image style={{backgroundColor:'rgba(0, 0, 0, 0.06)',width:50,height:50,borderRadius:50}} source={{uri:item.artist_photo}}/>
-                                            <View  style={{marginLeft:15}}>
-                                                <Text style={{fontSize:16,fontWeight:'bold'}}>{item.post_artist}</Text>
-                                                <Text style={{color:'#989898',fontSize:14}}>{item.post_title}</Text>
-                                            </View>
-                                        </View>
-                                        <View>
-                                            <TouchableOpacity onPress={()=>viewPostOptions(item.post_id)}>
-                                                <Ionicons name="ellipsis-vertical" size={15} color={"#7A8FA6"}/>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View style={{marginTop:10}}>
-                                        <Image style={{backgroundColor:'rgba(0, 0, 0, 0.06)',width:'100%',height:200,borderRadius:10}} source={{uri:item.cover_poto}}/>
-                                    </View>
-                                </>
-                            )}
-                        />
+                            <Post feed={Feed} Refreshing={Refreshing} onRefresh={onRefresh} viewPostOptions={viewPostOptions}/>
                         )
 
                     }

@@ -20,7 +20,7 @@ const App = ()=>{
   const SignedIn = createBottomTabNavigator();
 
   
-    if(!isSignedIn){
+    if(isSignedIn){
       return (
           <NavigationContainer>
           <SignedOut.Navigator>
