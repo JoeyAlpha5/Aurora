@@ -1,49 +1,66 @@
 import React, {useState,useEffect,createRef} from 'react';
 import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity} from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Post from '../Components/Post';
 const Home = ({navigation, route})=>{
+    //feed states
     const actionSheetRef = createRef();
     const [Feed,setFeed] = useState([]);
     const [SelectedPostLink,setSelectedPostLink] = useState('');
     const [Refreshing,setRefreshing] = useState(false);
     const [morePostsAvailable,setMorePostsAvailable] = useState(true);
+
+    // search feed states
+    const [searchValue, setSearchValue] = useState('');
+
     // get the feed
-    const getFeed = (reset_feed)=>{
+    const getFeed = (reset_feed,search_term)=>{
+        // set the feed count
         var feed_count = 0;
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
-        fetch('http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count)
+
+        //set the api call
+        var api_call = 'http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count;
+        search_term == undefined? null: api_call = 'http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count+"search_term="+searchValue;
+
+        fetch(api_call)
         .then(res=>res.json())
         .then(json=>{
-            //
-            console.log('results length ',json.response.length);
             // check if there are any results in the response
             {json.response.length > 0? setMorePostsAvailable(true): setMorePostsAvailable(false)};
             {reset_feed == true? setFeed(json.response): setFeed([...Feed,...json.response])}
             //disable refreshing
             setRefreshing(false);
         }).finally(()=>{
-            console.log(Feed);
+            // console.log(Feed);
         });
     }
 
+    // when you swipe down to refresh on the feed
     const onRefresh = ()=>{
         setRefreshing(true);
         getFeed(true);
     }
 
+    // see the available options when you click on the elipses icon on the top far right of a post
     const viewPostOptions = (feed_index) =>{
         setSelectedPostLink(Feed[feed_index].instagram_link);
         actionSheetRef.current?.setModalVisible();
     }
 
+    //open a link to i.e instagram when you select options on a post and then 'visit artist on instagram'
     const openLink = ()=>{
         Linking.openURL(SelectedPostLink);
     }
 
+    //get more posts when you reach the end of the feed
     const getMorePosts = ()=>{
-        console.log("getting more");
         getFeed(false);
+    }
+
+    const Search = ()=>{
+        console.log("search term ", searchValue);
     }
 
     useEffect(()=>{
@@ -57,9 +74,15 @@ const Home = ({navigation, route})=>{
                 <StatusBar  backgroundColor="white" barStyle="dark-content"/>
                 <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start'}}>
                     <Image style={{width:150,height:80,resizeMode:'contain'}} source={require('../Images/transparentLogo.png')}/>
-                    <TextInput placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search for videos'}/>
+                    <View style={{width:'100%',flexDirection:'row',justifyContent:'center'}}>  
+                        <TextInput value={searchValue} onChangeText={text => setSearchValue(text)} placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search for videos'}/>
+                        <TouchableOpacity onPress={()=>Search()} style={{width:20,height:20,marginTop:20,position:'absolute',right:10,zIndex:1000}}>
+                            <Ionicons color="#989898" size={20} name="ios-search"/>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
+ 
                 <View style={{width:'90%',marginTop:20,paddingBottom:130}}>
                     {Feed.length < 1?
                         (
@@ -72,6 +95,8 @@ const Home = ({navigation, route})=>{
 
                     }
                 </View>
+
+
             </View>
             <ActionSheet gestureEnabled={true} ref={actionSheetRef} containerStyle={{borderTopRightRadius:30,borderTopLeftRadius:30,backgroundColor:'#000'}}>
                 <View style={styles.actionSheet}>
