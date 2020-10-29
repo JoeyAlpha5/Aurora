@@ -1,6 +1,7 @@
 import React, {useState,useEffect,createRef} from 'react';
 import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity} from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
+import { cos } from 'react-native-reanimated';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Post from '../Components/Post';
 const Home = ({navigation, route})=>{
@@ -13,16 +14,20 @@ const Home = ({navigation, route})=>{
 
     // search feed states
     const [searchValue, setSearchValue] = useState('');
+    const [closeSearch,setCloseSearch] = useState(true);
 
     // get the feed
-    const getFeed = (reset_feed,search_term)=>{
+    const getFeed = (reset_feed)=>{
         // set the feed count
         var feed_count = 0;
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count;
-        search_term == undefined? null: api_call = 'http://0255d7e6116b.ngrok.io/feed?feed_count='+feed_count+"search_term="+searchValue;
+        var api_call = 'http://8e05bc595270.ngrok.io/feed?feed_count='+feed_count;
+        if(searchValue.length > 0 && searchValue != ""){
+            console.log("search term ", searchValue);
+            api_call = 'http://8e05bc595270.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+        }
 
         fetch(api_call)
         .then(res=>res.json())
@@ -33,7 +38,7 @@ const Home = ({navigation, route})=>{
             //disable refreshing
             setRefreshing(false);
         }).finally(()=>{
-            // console.log(Feed);
+            console.log(Feed);
         });
     }
 
@@ -60,13 +65,23 @@ const Home = ({navigation, route})=>{
     }
 
     const Search = ()=>{
-        console.log("search term ", searchValue);
+        // search only if there is a search term
+        if(searchValue.length > 0){
+            setFeed([]);
+            setCloseSearch(false);
+        }
+    }
+
+    const EndSearch = ()=>{
+        setSearchValue('');
+        setFeed([]);
+        setCloseSearch(true);
     }
 
     useEffect(()=>{
         // get the colors feed
         getFeed(true);
-    },[])
+    },[closeSearch])
 
     return (
         <>
@@ -75,10 +90,18 @@ const Home = ({navigation, route})=>{
                 <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start'}}>
                     <Image style={{width:150,height:80,resizeMode:'contain'}} source={require('../Images/transparentLogo.png')}/>
                     <View style={{width:'100%',flexDirection:'row',justifyContent:'center'}}>  
-                        <TextInput value={searchValue} onChangeText={text => setSearchValue(text)} placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search for videos'}/>
+                        <TextInput value={searchValue} onChangeText={text => setSearchValue(text)} placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search using artist name or song title'}/>
                         <TouchableOpacity onPress={()=>Search()} style={{width:20,height:20,marginTop:20,position:'absolute',right:10,zIndex:1000}}>
                             <Ionicons color="#989898" size={20} name="ios-search"/>
                         </TouchableOpacity>
+                        {closeSearch == false?
+                            (
+                                <TouchableOpacity onPress={()=>EndSearch()} style={{width:20,height:20,marginTop:20,position:'absolute',right:40,zIndex:1000}}>
+                                    <Ionicons color="#989898" size={20} name="close"/>
+                                </TouchableOpacity>
+                            ):
+                            null
+                        }
                     </View>
                 </View>
 
