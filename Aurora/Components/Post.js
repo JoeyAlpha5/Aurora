@@ -34,7 +34,9 @@ export const Post = (props)=>{
                         </View>
                     </View>
                     <View style={{marginTop:10}}>
-                        <Image style={{backgroundColor:'rgba(0, 0, 0, 0.06)',width:'100%',height:200,borderRadius:10}} source={{uri:item.cover_poto}}/>
+                        <TouchableOpacity onPress={()=>props.play(index)}>
+                            <Image style={{backgroundColor:'rgba(0, 0, 0, 0.06)',width:'100%',height:200,borderRadius:10}} source={{uri:item.cover_poto}}/>
+                        </TouchableOpacity>
                     </View>
                 </>
             )}

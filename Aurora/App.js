@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Main from './Screens/Main';
 import SignIn from './Screens/SignIn';
+import Player from './Screens/Player';
 import SignUp from './Screens/SignUp';
 import ForgotPassword from './Screens/ForgotPassword';
 import Home from './Screens/Home';
@@ -12,6 +13,16 @@ import LyricSearch from './Screens/LyricSearch';
 import Notifications from './Screens/Notifications';
 import Profile from './Screens/Profile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const HomeStack =  createStackNavigator();
+const HomeStackScreens = ()=>{
+  return(
+    <HomeStack.Navigator>
+          <HomeStack.Screen name="Feed" component={Home} options={{headerShown:false}}/>
+          <HomeStack.Screen name="Player" component={Player} options={{headerShown:false}}/>
+    </HomeStack.Navigator>
+  )
+}
 
 const App = ()=>{
  const [isSignedIn,setIsSignedIn] = useState(false);
@@ -72,7 +83,7 @@ const App = ()=>{
         
               }}
             >
-            <SignedIn.Screen name="Home" component={Home} options={{headerShown:false}}/>
+            <SignedIn.Screen name="Home" component={HomeStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="LyricSearch" component={LyricSearch} options={{headerShown:false}}/>
             <SignedIn.Screen name="Notifications" component={Notifications} options={{headerShown:false}}/>
             <SignedIn.Screen name="Profile" component={Profile} options={{headerShown:false}}/>

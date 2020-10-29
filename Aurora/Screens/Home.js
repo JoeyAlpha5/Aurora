@@ -1,9 +1,10 @@
 import React, {useState,useEffect,createRef} from 'react';
 import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity} from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
-import { cos } from 'react-native-reanimated';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Post from '../Components/Post';
+import { Overlay } from 'react-native-elements';
+import PopUp from '../Components/PopUp';
 const Home = ({navigation, route})=>{
     //feed states
     const actionSheetRef = createRef();
@@ -12,9 +13,13 @@ const Home = ({navigation, route})=>{
     const [Refreshing,setRefreshing] = useState(false);
     const [morePostsAvailable,setMorePostsAvailable] = useState(true);
 
-    // search feed states
+    // search states
     const [searchValue, setSearchValue] = useState('');
     const [closeSearch,setCloseSearch] = useState(true);
+
+    // feed and search state
+    const [overlay,setOverlay] = useState(false);
+    const [errText,setErrText] = useState('');
 
     // get the feed
     const getFeed = (reset_feed)=>{
@@ -23,10 +28,9 @@ const Home = ({navigation, route})=>{
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://8e05bc595270.ngrok.io/feed?feed_count='+feed_count;
+        var api_call = 'http://3f064d8f1e8e.ngrok.io/feed?feed_count='+feed_count;
         if(searchValue.length > 0 && searchValue != ""){
-            console.log("search term ", searchValue);
-            api_call = 'http://8e05bc595270.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+            api_call = 'http://3f064d8f1e8e.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
         }
 
         fetch(api_call)
@@ -35,11 +39,25 @@ const Home = ({navigation, route})=>{
             // check if there are any results in the response
             {json.response.length > 0? setMorePostsAvailable(true): setMorePostsAvailable(false)};
             {reset_feed == true? setFeed(json.response): setFeed([...Feed,...json.response])}
-            //disable refreshing
+            //hide swipe down to refresh
             setRefreshing(false);
+
+            //check if there are any search results and if the feed is empty
+            checkResults(json.response.length);
+
         }).finally(()=>{
-            console.log(Feed);
+            // console.log("results ",Feed);
+        }).catch(()=>{
+            setErrText("Network error. \n Unable to retrieve results");
+            setOverlay(true);
         });
+    }
+
+    const checkResults = (resultsLength)=>{
+        if(resultsLength == 0 && Feed.length == 0){
+            setErrText("No results found");
+            setOverlay(true);
+        }
     }
 
     // when you swipe down to refresh on the feed
@@ -78,6 +96,16 @@ const Home = ({navigation, route})=>{
         setCloseSearch(true);
     }
 
+    const closeOverlay = ()=>{
+        setOverlay(false);
+        EndSearch();
+    }
+
+    const PlayVicdeo = (index)=>{
+        var playlist = Feed.slice(index+1,index+6);
+        navigation.navigate('Player',{data:Feed[index], playlist:playlist});
+    }
+
     useEffect(()=>{
         // get the colors feed
         getFeed(true);
@@ -113,7 +141,7 @@ const Home = ({navigation, route})=>{
 
                         ):
                         (
-                            <Post morePostToLoad={morePostsAvailable} feed={Feed} getMore={getMorePosts} Refreshing={Refreshing} onRefresh={onRefresh} viewPostOptions={viewPostOptions}/>
+                            <Post play={PlayVicdeo} morePostToLoad={morePostsAvailable} feed={Feed} getMore={getMorePosts} Refreshing={Refreshing} onRefresh={onRefresh} viewPostOptions={viewPostOptions}/>
                         )
 
                     }
@@ -137,6 +165,11 @@ const Home = ({navigation, route})=>{
                     </View>
                 </View>
             </ActionSheet>
+
+            <Overlay isVisible={overlay}>
+                <PopUp errorBtn={()=>closeOverlay()} text={errText} error={true} />
+            </Overlay>
+
         </>
     )
 }
