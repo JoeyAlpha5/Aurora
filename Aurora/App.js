@@ -10,17 +10,30 @@ import SignUp from './Screens/SignUp';
 import ForgotPassword from './Screens/ForgotPassword';
 import Home from './Screens/Home';
 import LyricSearch from './Screens/LyricSearch';
+import SelectSong from './Screens/Lyric_Search/SelectSong';
+import SelectLyrics from './Screens/Lyric_Search/SelectLyrics';
 import Notifications from './Screens/Notifications';
 import Profile from './Screens/Profile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomeStack =  createStackNavigator();
+const LyricSearchStack =  createStackNavigator();
 const HomeStackScreens = ()=>{
   return(
     <HomeStack.Navigator>
           <HomeStack.Screen name="Feed" component={Home} options={{headerShown:false}}/>
           <HomeStack.Screen name="Player" component={Player} options={{headerShown:false}}/>
     </HomeStack.Navigator>
+  )
+}
+
+const LyricSearchStackScreens = ()=>{
+  return(
+    <LyricSearchStack.Navigator>
+          <LyricSearchStack.Screen name="Apparel" component={LyricSearch} options={{headerShown:false}}/>
+          <LyricSearchStack.Screen name="SelectSong" component={SelectSong} options={{headerShown:true,title:'Select Song'}}/>
+          <LyricSearchStack.Screen name="SelectLyrics" component={SelectLyrics} options={{headerShown:true,title:'Select Lyrics'}}/>
+    </LyricSearchStack.Navigator>
   )
 }
 
@@ -33,7 +46,7 @@ const App = ()=>{
   
     if(isSignedIn){
       return (
-          <NavigationContainer>
+        <NavigationContainer>
           <SignedOut.Navigator>
             <SignedOut.Screen name="Main" component={Main} options={{headerShown:false}}/>
             <SignedOut.Screen name="SignIn" component={SignIn} options={{headerShown:false}}/>
@@ -84,7 +97,7 @@ const App = ()=>{
               }}
             >
             <SignedIn.Screen name="Home" component={HomeStackScreens} options={{headerShown:false}}/>
-            <SignedIn.Screen name="LyricSearch" component={LyricSearch} options={{headerShown:false}}/>
+            <SignedIn.Screen name="LyricSearch" component={LyricSearchStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="Notifications" component={Notifications} options={{headerShown:false}}/>
             <SignedIn.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
           </SignedIn.Navigator>

@@ -28,9 +28,9 @@ const Home = ({navigation, route})=>{
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://3f064d8f1e8e.ngrok.io/feed?feed_count='+feed_count;
+        var api_call = 'http://d4c467fb13f0.ngrok.io/feed?feed_count='+feed_count;
         if(searchValue.length > 0 && searchValue != ""){
-            api_call = 'http://3f064d8f1e8e.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+            api_call = 'http://d4c467fb13f0.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
         }
 
         fetch(api_call)
@@ -113,7 +113,7 @@ const Home = ({navigation, route})=>{
 
     return (
         <>
-            <View style={{flex:1,backgroundColor:'#fff',alignItems:'center'}}>
+            <View style={{flex:1,alignItems:'center'}}>
                 <StatusBar  backgroundColor="white" barStyle="dark-content"/>
                 <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start'}}>
                     <Image style={{width:150,height:80,resizeMode:'contain'}} source={require('../Images/transparentLogo.png')}/>
@@ -191,7 +191,5 @@ const styles = StyleSheet.create({
         marginTop:10,
         borderRadius:20,
         paddingLeft:15
-
-
     }
 })

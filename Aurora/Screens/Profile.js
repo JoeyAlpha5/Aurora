@@ -5,8 +5,12 @@ const Profile = ({navigation, route})=>{
     return (
         <>
             <StatusBar  backgroundColor="white" barStyle="dark-content"/>
-            <View>
-                <Text>Profile</Text>
+            <View style={{flex:1,alignItems:'center'}}>
+
+                <View style={{width:'90%',marginTop:10,alignItems:'flex-start',alignContent:'flex-start'}}>
+                    <Text style={{fontSize:25,fontWeight:'bold'}}>Profile</Text>
+                </View>
+                
             </View>
         </>
     )
