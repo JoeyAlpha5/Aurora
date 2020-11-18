@@ -12,7 +12,7 @@ const SearchLyrics = ({navigation,route}) =>{
             <ScrollView  contentContainerStyle={{alignItems:'center'}}>
                 <View style={styles.selectedSong}>
                     <Image style={{width:60,height:60,borderRadius:10,marginLeft:15,backgroundColor:'#646862'}} source={{uri:route.params.image}}/>
-                    <View style={{marginLeft:15}}>
+                    <View style={{marginLeft:15,width:'80%'}}>
                         <Text style={{fontWeight:'bold',fontSize:16}}>{route.params.title}</Text>
                         <Text style={{color:'#646862',fontWeight:'bold',fontSize:12}}>{route.params.artist}</Text>
                         <Text style={{color:'#646862',fontSize:12}}>{route.params.date}</Text>

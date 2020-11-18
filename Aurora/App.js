@@ -15,6 +15,8 @@ import SelectLyrics from './Screens/Lyric_Search/SelectLyrics';
 import Notifications from './Screens/Notifications';
 import Profile from './Screens/Profile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {authentication} from './Firebase/firebase';
+
 
 const HomeStack =  createStackNavigator();
 const LyricSearchStack =  createStackNavigator();
@@ -43,13 +45,26 @@ const App = ()=>{
   const SignedOut = createStackNavigator();
   const SignedIn = createBottomTabNavigator();
 
+  const signIn = (signInStatus)=>{
+    setIsSignedIn(signInStatus);
+  }
   
-    if(isSignedIn){
+
+  useEffect(()=>{
+    authentication.onAuthStateChanged((user)=>{
+      if(user){
+        setIsSignedIn(true);
+      }
+    });
+  })
+
+  
+    if(!isSignedIn){
       return (
         <NavigationContainer>
           <SignedOut.Navigator>
             <SignedOut.Screen name="Main" component={Main} options={{headerShown:false}}/>
-            <SignedOut.Screen name="SignIn" component={SignIn} options={{headerShown:false}}/>
+            <SignedOut.Screen name="SignIn" initialParams={{ authenticate: signIn }} component={SignIn} options={{headerShown:false}}/>
             <SignedOut.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
             <SignedOut.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown:false}}/>
           </SignedOut.Navigator>
@@ -99,7 +114,7 @@ const App = ()=>{
             <SignedIn.Screen name="Home" component={HomeStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="LyricSearch" component={LyricSearchStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="Notifications" component={Notifications} options={{headerShown:false}}/>
-            <SignedIn.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+            <SignedIn.Screen name="Profile" authenticate={signIn} component={Profile} options={{headerShown:false}}/>
           </SignedIn.Navigator>
         </NavigationContainer>
       )

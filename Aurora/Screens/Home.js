@@ -5,6 +5,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Post from '../Components/Post';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
+import {authentication} from '../Firebase/firebase';
+
 const Home = ({navigation, route})=>{
     //feed states
     const actionSheetRef = createRef();
@@ -28,9 +30,9 @@ const Home = ({navigation, route})=>{
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://d4c467fb13f0.ngrok.io/feed?feed_count='+feed_count;
+        var api_call = 'http://e4b4a5f584a5.ngrok.io/feed?feed_count='+feed_count;
         if(searchValue.length > 0 && searchValue != ""){
-            api_call = 'http://d4c467fb13f0.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+            api_call = 'http://e4b4a5f584a5.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
         }
 
         fetch(api_call)

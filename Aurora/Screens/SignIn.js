@@ -6,14 +6,29 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
 import Loader from '../Components/Loader';
-const SignIn = ({navigation})=>{
+import {authentication} from '../Firebase/firebase';
+
+const SignIn = ({navigation,route})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState("");
     const [popUpErr,setpopUpErr] = useState(false);
     const [email,onChangeEmail] = useState('');
     const [password,onChangePassword] = useState('');
     const [loader,setLoader] = useState(false);
+
     const signIn = ()=>{
+        authentication.signInWithEmailAndPassword(email,password)
+        .then((response)=>{
+            if(authentication.currentUser.emailVerified){
+                route.params.authenticate(true);
+            }else{
+                showErr(true,true,"Please verify your account before signing in");
+            }
+            setLoader(false);
+        }).catch(err=>{
+            setLoader(false);
+            showErr(true,true,err.message);
+        });
     }
 
     const validate = ()=>{
@@ -26,6 +41,7 @@ const SignIn = ({navigation})=>{
         }else{
             setOverlay(false);
             setLoader(true);
+            signIn();
         }
     }
 
@@ -35,6 +51,7 @@ const SignIn = ({navigation})=>{
         setpopUpErr(show_popup);
         setOverlayText(overlay_text);
     }
+
   return (
         <>
             <StatusBar  backgroundColor="white" barStyle="dark-content"/>
@@ -65,7 +82,7 @@ const SignIn = ({navigation})=>{
             <Overlay isVisible={overlay}>
                 <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
             </Overlay>
-            <Overlay isVisible={loader} onBackdropPress={()=>setLoader(false)}>
+            <Overlay isVisible={loader}>
                 <Loader text={'Signing you in, please wait..'}/>
             </Overlay>
         </>

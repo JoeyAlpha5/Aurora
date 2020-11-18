@@ -6,17 +6,45 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Overlay } from 'react-native-elements';
 import PopUp from '../Components/PopUp';
 import Loader from '../Components/Loader';
+import {authentication} from '../Firebase/firebase';
+
 const SignUp = ({navigation})=>{
     const [overlay,setOverlay] = useState(false);
     const [OverlayText,setOverlayText] = useState('Registration is currently not complete');
     const [popUpErr,setpopUpErr] = useState(false);
+    const [Registered,setRegistered] = useState(false);
     const [Fullname,onChangeFullname] = useState('');
     const [Email,onChangeEmail] = useState('');
     const [Mobile,onChangeMobile] = useState('');
     const [Password,onChangePassword] = useState('');
     const [ConfirmPassword,onChangeConfirmPassword] = useState('');
     const [loader,setLoader] = useState(false);
-    const signUp = ()=>{
+
+    const createAccount = ()=>{
+        setOverlay(false);
+        setLoader(true);
+        var register = authentication.createUserWithEmailAndPassword(Email,Password);
+        register.then((user)=>{
+            authentication.currentUser.sendEmailVerification(); 
+            setLoader(false);
+            setRegistered(true); 
+        }).catch(err=>{
+            setLoader(false);
+            showErr(true,true,err.message);
+        })
+    }
+    
+
+    const SignUpSuccess = ()=>{
+        setRegistered(false);
+        setLoader(false);
+        setOverlay(false);
+        onChangeFullname('');
+        onChangeConfirmPassword('');
+        onChangeEmail('');
+        onChangeMobile('');
+        onChangePassword('');
+        navigation.navigate('SignIn');
     }
 
 
@@ -43,8 +71,7 @@ const SignUp = ({navigation})=>{
             showErr(true,true,"Unable to sign up \n a password must be at least 6 characters long");
         }
         else{
-            setOverlay(false);
-            setLoader(true);
+            createAccount();
         }
     }
 
@@ -85,7 +112,11 @@ const SignUp = ({navigation})=>{
                 <PopUp errorBtn={()=>setOverlay(false)} text={OverlayText} error={popUpErr} />
             </Overlay>
 
-            <Overlay isVisible={loader} onBackdropPress={()=>setLoader(false)}>
+            <Overlay isVisible={Registered}>
+                <PopUp successBtn={()=>SignUpSuccess()} text={"Welcome to Aurora, please check your inbox to verify your account."} />
+            </Overlay>
+
+            <Overlay isVisible={loader}>
                 <Loader text={'Creating your account, please wait..'}/>
             </Overlay>
         </>

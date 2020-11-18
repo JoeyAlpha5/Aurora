@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import '@firebase/auth';
 var app;
 var firebaseConfig = {
     apiKey: "AIzaSyCjDEHE_kuiaL3KQ0oWO9j6HwEaMb1j89g",
@@ -13,4 +14,7 @@ var firebaseConfig = {
 if (!firebase.apps.length) {
     app = firebase.initializeApp(firebaseConfig);
 }
+
+//sign up
+export const authentication = firebase.auth();
 export {firebase}

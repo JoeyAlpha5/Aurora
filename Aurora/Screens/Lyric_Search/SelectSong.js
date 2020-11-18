@@ -12,7 +12,7 @@ const SelectSong = ({navigation,route})=>{
 
     const SearchLyrics = () =>{
         setLoading(true);
-        fetch('http://d4c467fb13f0.ngrok.io/lyrics?title='+Title+'&artist='+Artist)
+        fetch('http://e4b4a5f584a5.ngrok.io/lyrics?title='+Title+'&artist='+Artist)
         .then(res=>res.json())
         .then((json)=>{
             setLoading(false);

@@ -9,6 +9,7 @@ const PopUp = (props)=>{
             props.errorBtn();
         }else{
             // 
+            props.successBtn();
         }
     }
 
