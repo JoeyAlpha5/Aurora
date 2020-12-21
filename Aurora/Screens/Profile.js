@@ -1,7 +1,15 @@
 import React, {useState,useEffect} from 'react';
 import {View, Text,StatusBar} from 'react-native';
+import LongButton from '../Components/LongButton';
+import {authentication} from '../Firebase/firebase';
+
 
 const Profile = ({navigation, route})=>{
+
+    const logout = () =>{
+        authentication.signOut();
+    }
+
     return (
         <>
             <StatusBar  backgroundColor="white" barStyle="dark-content"/>
@@ -11,6 +19,8 @@ const Profile = ({navigation, route})=>{
                     <Text style={{fontSize:25,fontWeight:'bold'}}>Profile</Text>
                 </View>
                 
+                <LongButton text="Sign out" buttonClick={logout}/>
+
             </View>
         </>
     )

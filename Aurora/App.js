@@ -15,15 +15,14 @@ import SelectLyrics from './Screens/Lyric_Search/SelectLyrics';
 import Notifications from './Screens/Notifications';
 import Profile from './Screens/Profile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {authentication} from './Firebase/firebase';
 
 
 const HomeStack =  createStackNavigator();
 const LyricSearchStack =  createStackNavigator();
-const HomeStackScreens = ()=>{
+const HomeStackScreens = ({navigation,route})=>{
   return(
     <HomeStack.Navigator>
-          <HomeStack.Screen name="Feed" component={Home} options={{headerShown:false}}/>
+          <HomeStack.Screen initialParams={{ authenticate: route.params.authenticate }}  name="Feed" component={Home} options={{headerShown:false}}/>
           <HomeStack.Screen name="Player" component={Player} options={{headerShown:false}}/>
     </HomeStack.Navigator>
   )
@@ -32,7 +31,7 @@ const HomeStackScreens = ()=>{
 const LyricSearchStackScreens = ()=>{
   return(
     <LyricSearchStack.Navigator>
-          <LyricSearchStack.Screen name="Apparel" component={LyricSearch} options={{headerShown:false}}/>
+          <LyricSearchStack.Screen  name="Apparel" component={LyricSearch} options={{headerShown:false}}/>
           <LyricSearchStack.Screen name="SelectSong" component={SelectSong} options={{headerShown:true,title:'Select Song'}}/>
           <LyricSearchStack.Screen name="SelectLyrics" component={SelectLyrics} options={{headerShown:true,title:'Select Lyrics'}}/>
     </LyricSearchStack.Navigator>
@@ -40,24 +39,15 @@ const LyricSearchStackScreens = ()=>{
 }
 
 const App = ()=>{
- const [isSignedIn,setIsSignedIn] = useState(false);
+ const [isSignedIn,setIsSignedIn] = useState(true);
 
   const SignedOut = createStackNavigator();
   const SignedIn = createBottomTabNavigator();
 
+  // sets sign in status, whether a user is logged in or not
   const signIn = (signInStatus)=>{
     setIsSignedIn(signInStatus);
   }
-  
-
-  useEffect(()=>{
-    authentication.onAuthStateChanged((user)=>{
-      if(user){
-        setIsSignedIn(true);
-      }
-    });
-  })
-
   
     if(!isSignedIn){
       return (
@@ -111,7 +101,7 @@ const App = ()=>{
         
               }}
             >
-            <SignedIn.Screen name="Home" component={HomeStackScreens} options={{headerShown:false}}/>
+            <SignedIn.Screen name="Home" initialParams={{ authenticate: signIn }}  component={HomeStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="LyricSearch" component={LyricSearchStackScreens} options={{headerShown:false}}/>
             <SignedIn.Screen name="Notifications" component={Notifications} options={{headerShown:false}}/>
             <SignedIn.Screen name="Profile" authenticate={signIn} component={Profile} options={{headerShown:false}}/>
