@@ -27,11 +27,11 @@ target 'Aurora' do
   end
 end
 
-target 'Aurora-tvOS' do
-  # Pods for Aurora-tvOS
+# target 'Aurora-tvOS' do
+#   # Pods for Aurora-tvOS
 
-  target 'Aurora-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
+#   target 'Aurora-tvOSTests' do
+#     inherit! :search_paths
+#     # Pods for testing
+#   end
+# end

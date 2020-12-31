@@ -1,5 +1,5 @@
 import React, {useState,useEffect,createRef} from 'react';
-import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity} from 'react-native';
+import {View,Text,StatusBar,TextInput,StyleSheet,ActivityIndicator,Image,Linking,TouchableOpacity,Platform} from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Post from '../Components/Post';
@@ -8,6 +8,9 @@ import PopUp from '../Components/PopUp';
 import {authentication} from '../Firebase/firebase';
 
 const Home = ({navigation, route})=>{
+    // top bar state, if the device is an ios device bring dow the top bar by 20
+    const [isIos,setisIos] = useState(0);
+
     //feed states
     const actionSheetRef = createRef();
     const [Feed,setFeed] = useState([]);
@@ -30,9 +33,9 @@ const Home = ({navigation, route})=>{
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://8c73d22d78e4.ngrok.io/feed?feed_count='+feed_count;
+        var api_call = 'http://34bf6e3446e4.ngrok.io/feed?feed_count='+feed_count;
         if(searchValue.length > 0 && searchValue != ""){
-            api_call = 'http://8c73d22d78e4.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+            api_call = 'http://34bf6e3446e4.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
         }
 
         fetch(api_call)
@@ -109,6 +112,9 @@ const Home = ({navigation, route})=>{
     }
 
     useEffect(()=>{
+        // check if device is an ios device
+        Platform.OS == 'ios' ? setisIos(20):setisIos(0);
+
         // check if user is signed in
         authentication.onAuthStateChanged((user)=>{
             if(user){
@@ -125,7 +131,7 @@ const Home = ({navigation, route})=>{
         <>
             <View style={{flex:1,alignItems:'center'}}>
                 <StatusBar  backgroundColor="white" barStyle="dark-content"/>
-                <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start'}}>
+                <View style={{width:'90%',alignItems:'flex-start',alignContent:'flex-start',marginTop:isIos}}>
                     <Image style={{width:150,height:80,resizeMode:'contain'}} source={require('../Images/transparentLogo.png')}/>
                     <View style={{width:'100%',flexDirection:'row',justifyContent:'center'}}>  
                         <TextInput value={searchValue} onChangeText={text => setSearchValue(text)} placeholderTextColor={'#000'} style={styles.searchBar}  placeholder={'Search using artist name or song title'}/>

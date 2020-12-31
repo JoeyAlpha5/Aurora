@@ -1,9 +1,10 @@
 import React, {useState,useEffect} from 'react';
-import {View, Text,StatusBar,StyleSheet,ScrollView} from 'react-native';
+import {View, Text,StatusBar,StyleSheet,ScrollView,Platform} from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import ApparelType from '../Components/ApparelType';
 import LongButton from '../Components/LongButton';
 const LyricSearch = ({navigation, route})=>{
+    const [isIos,setisIos] = useState(10);
     const [small,setSmall] = useState(false);
     const [large,setLarge] = useState(false);
     const [xLarge,setXlarge] = useState(false);
@@ -16,12 +17,18 @@ const LyricSearch = ({navigation, route})=>{
     const getLyrics = () =>{
         navigation.navigate('SelectSong',{size:selectedSize,apparelType:selectedApparel});
     }
+
+
+    useEffect(()=>{
+        Platform.OS == 'ios' ? setisIos(50):setisIos(10);
+    })
+
     return (
         <>
             <StatusBar  backgroundColor="white" barStyle="dark-content"/>
             <View style={{flex:1,alignItems:'center'}}>
 
-                <View style={{width:'90%',marginTop:10,marginBottom:20,alignItems:'flex-start',alignContent:'flex-start'}}>
+                <View style={{width:'90%',marginTop:isIos,marginBottom:20,alignItems:'flex-start',alignContent:'flex-start'}}>
                     <Text style={{fontSize:25,fontWeight:'bold'}}>Apparel type</Text>
                     <Text style={{fontSize:15,color:'#646464'}}>select apparel type and size</Text>
                 </View>
