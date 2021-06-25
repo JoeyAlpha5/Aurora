@@ -33,9 +33,9 @@ const Home = ({navigation, route})=>{
         reset_feed == true? feed_count = 0: feed_count = Feed.length;
 
         //set the api call
-        var api_call = 'http://34bf6e3446e4.ngrok.io/feed?feed_count='+feed_count;
+        var api_call = `https://7ba898feaab5.ngrok.io/feed?feed_count=${feed_count}`;
         if(searchValue.length > 0 && searchValue != ""){
-            api_call = 'http://34bf6e3446e4.ngrok.io/feed?feed_count='+feed_count+"&search_term="+searchValue;
+            api_call = `https://7ba898feaab5.ngrok.io/feed?feed_count=${feed_count}&search_term=${searchValue}`;
         }
 
         fetch(api_call)
